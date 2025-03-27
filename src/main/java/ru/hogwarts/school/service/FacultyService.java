@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Service
 public class FacultyService {
     private Map<Long, Faculty> facultyMap = new HashMap<>();
     private long currentId = 0;
