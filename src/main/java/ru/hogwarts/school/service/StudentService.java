@@ -1,47 +1,57 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    private Map<Long, Student> studentMap = new HashMap<>();
-    private long currentId = 0;
+    private final StudentRepository studentRepository;
+
+    @Autowired
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public Student addStudent(String name, int age) {
-        long newId = ++currentId;
-        Student student = new Student(newId, name, age);
-        studentMap.put(newId, student);
-        return student;
+        Student student = new Student(null, name, age);
+        return studentRepository.save(student);
     }
+
     public Student getStudent(Long id) {
-        return studentMap.get(id);
+        return studentRepository.findById(id).orElse(null);
     }
 
     public Student updateStudent(Long id, String name, int age) {
-        Student student = studentMap.get(id);
-        if (student != null) {
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+        if (optionalStudent.isPresent()) {
+            Student student = optionalStudent.get();
             student.setName(name);
             student.setAge(age);
+            return studentRepository.save(student);
         }
-        return student;
+        return null;
     }
 
     public boolean deleteStudent(Long id) {
-        return studentMap.remove(id) != null;
+        if (studentRepository.existsById(id)) {
+            studentRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public boolean containsStudent(Long id) {
-        return studentMap.containsKey(id);
+        return studentRepository.existsById(id);
     }
 
     public List<Student> getStudentsByAge(int age) {
-        return studentMap.values().stream()
+        return studentRepository.findAll().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
     }
