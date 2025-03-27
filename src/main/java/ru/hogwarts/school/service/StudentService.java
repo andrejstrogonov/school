@@ -3,7 +3,9 @@ package ru.hogwarts.school.service;
 import ru.hogwarts.school.model.Student;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StudentService {
     private Map<Long, Student> studentMap = new HashMap<>();
@@ -34,5 +36,11 @@ public class StudentService {
 
     public boolean containsStudent(Long id) {
         return studentMap.containsKey(id);
+    }
+
+    public List<Student> getStudentsByAge(int age) {
+        return studentMap.values().stream()
+                .filter(student -> student.getAge() == age)
+                .collect(Collectors.toList());
     }
 }

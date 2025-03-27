@@ -3,7 +3,9 @@ package ru.hogwarts.school.service;
 import ru.hogwarts.school.model.Faculty;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FacultyService {
     private Map<Long, Faculty> facultyMap = new HashMap<>();
@@ -36,5 +38,10 @@ public class FacultyService {
     public boolean containsFaculty(Long id) {
         return facultyMap.containsKey(id);
     }
-}
 
+    public List<Faculty> getFacultiesByColor(String color) {
+        return facultyMap.values().stream()
+                .filter(faculty -> faculty.getColor().equalsIgnoreCase(color))
+                .collect(Collectors.toList());
+    }
+}
