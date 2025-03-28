@@ -63,5 +63,4 @@ public class FacultyService {
                                 faculty.getColor().toLowerCase().contains(nameOrColor.toLowerCase()))
                 .collect(Collectors.toList());
     }
-
 }

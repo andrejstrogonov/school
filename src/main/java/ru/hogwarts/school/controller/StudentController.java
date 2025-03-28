@@ -3,6 +3,7 @@ package ru.hogwarts.school.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class StudentController {
     @Autowired
     private StudentService studentService;
+
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         Student createdStudent = studentService.addStudent(student.getName(), student.getAge());
@@ -36,16 +38,20 @@ public class StudentController {
         boolean deleted = studentService.deleteStudent(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
     @GetMapping("/age/{age}")
     public ResponseEntity<List<Student>> getStudentsByAge(@PathVariable int age) {
         List<Student> students = studentService.getStudentsByAge(age);
         return students.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(students);
     }
-    @GetMapping("/age/between")
-    public ResponseEntity<List<Student>> getStudentsByAgeBetween(
-            @RequestParam int min,
-            @RequestParam int max) {
-        List<Student> students = studentService.getStudentsByAgeBetween(min, max);
-        return students.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(students);
+
+    @GetMapping("/{id}/faculty")
+    public ResponseEntity<Faculty> getFacultyByStudent(@PathVariable Long id) {
+        Student student = studentService.getStudent(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Faculty faculty = student.getFaculty();
+        return faculty != null ? ResponseEntity.ok(faculty) : ResponseEntity.notFound().build();
     }
 }
