@@ -37,9 +37,16 @@ public class FacultyController {
         boolean deleted = facultyService.deleteFaculty(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
     @GetMapping("/color/{color}")
     public ResponseEntity<List<Faculty>> getFacultiesByColor(@PathVariable String color) {
         List<Faculty> faculties = facultyService.getFacultiesByColor(color);
+        return faculties.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(faculties);
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<List<Faculty>> findFaculties(@RequestParam String nameOrColor) {
+        List<Faculty> faculties = facultyService.findByNameOrColorIgnoreCase(nameOrColor);
         return faculties.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(faculties);
     }
 }
