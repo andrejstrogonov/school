@@ -1,0 +1,18 @@
+<changeSet id="create-indexes" author="yourname">
+    <!-- Create index on Student name for faster searches -->
+    <createIndex indexName="idx_student_name" tableName="Student">
+        <column name="name" />
+    </createIndex>
+
+    <!-- Create composite index on Faculty name and color to improve search and join performance -->
+    <createIndex indexName="idx_faculty_name_color" tableName="Faculty">
+        <column name="name" />
+        <column name="color" />
+    </createIndex>
+
+    <!-- Assuming a primary key index already, but specifying a composite index might be useful -->
+    <createIndex indexName="idx_person_car" tableName="PersonCar">
+        <column name="person_id" />
+        <column name="car_id" />
+    </createIndex>
+</changeSet>
