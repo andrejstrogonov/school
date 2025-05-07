@@ -1,15 +1,8 @@
-select * from student;
--- Получить всех студентов, возраст которых находится между 10 и 20
-SELECT * FROM student WHERE age BETWEEN 10 AND 20;
+-- liquibase formatted sql
 
--- Получить всех студентов, но отобразить только список их имен
-SELECT name FROM student;
+-- changeset strogonov:1
+-- Create index for search by student name
+CREATE INDEX idx_student_name ON student (name);
 
--- Получить всех студентов, у которых в имени присутствует буква О
-SELECT * FROM student WHERE name LIKE '%О%';
-
--- Получить всех студентов, у которых возраст меньше идентификатора
-SELECT * FROM student WHERE age < id;
-
--- Получить всех студентов упорядоченных по возрасту
-SELECT * FROM student ORDER BY age;
+-- Create composite index for search by faculty name and color
+CREATE INDEX idx_faculty_name_color ON faculty (name, color);
