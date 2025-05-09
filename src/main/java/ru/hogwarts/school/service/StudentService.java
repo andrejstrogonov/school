@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
     private final StudentRepository studentRepository;
 
     @Autowired
@@ -20,15 +23,18 @@ public class StudentService {
     }
 
     public Student addStudent(String name, int age) {
+        logger.info("Called addStudent method");
         Student student = new Student(null, name, age);
         return studentRepository.save(student);
     }
 
     public Student getStudent(Long id) {
+        logger.info("Called getStudent method");
         return studentRepository.findById(id).orElse(null);
     }
 
     public Student updateStudent(Long id, String name, int age) {
+        logger.info("Called updateStudent method");
         Optional<Student> optionalStudent = studentRepository.findById(id);
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
@@ -40,6 +46,7 @@ public class StudentService {
     }
 
     public boolean deleteStudent(Long id) {
+        logger.info("Called deleteStudent method");
         if (studentRepository.existsById(id)) {
             studentRepository.deleteById(id);
             return true;
@@ -48,12 +55,14 @@ public class StudentService {
     }
 
     public List<Student> getStudentsByAge(int age) {
+        logger.info("Called getStudentsByAge method");
         return studentRepository.findAll().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
     }
 
     public void setFaculty(Long studentId, Faculty faculty) {
+        logger.info("Called setFaculty method");
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
@@ -63,14 +72,17 @@ public class StudentService {
     }
 
     public long getTotalStudentCount() {
+        logger.info("Called getTotalStudentCount method");
         return studentRepository.getTotalStudentCount();
     }
 
     public double getAverageStudentAge() {
+        logger.info("Called getAverageStudentAge method");
         return studentRepository.getAverageStudentAge();
     }
 
     public List<Student> getLastFiveStudents() {
+        logger.info("Called getLastFiveStudents method");
         return studentRepository.findLastFiveStudents();
     }
 }
