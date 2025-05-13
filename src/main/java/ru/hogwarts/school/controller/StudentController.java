@@ -63,7 +63,7 @@ public class StudentController {
 
     @GetMapping("/average-age")
     public ResponseEntity<Double> getAverageStudentAge() {
-        double averageAge = studentService.getAverageStudentAge();
+        double averageAge = studentService.calculateAverageAge();
         return ResponseEntity.ok(averageAge);
     }
 
@@ -71,5 +71,11 @@ public class StudentController {
     public ResponseEntity<List<Student>> getLastFiveStudents() {
         List<Student> students = studentService.getLastFiveStudents();
         return students.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/names-starting-with-a")
+    public ResponseEntity<List<String>> getStudentNamesStartingWithA() {
+        List<String> studentNames = studentService.getStudentNamesStartingWithA();
+        return ResponseEntity.ok(studentNames);
     }
 }
