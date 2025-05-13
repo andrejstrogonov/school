@@ -1,4 +1,4 @@
-package ru.hogwarts.school.util;
+package ru.hogwarts.school;
 
 import java.util.concurrent.RecursiveTask;
 
