@@ -136,4 +136,36 @@ class StudentControllerWebMVCTests {
         
         verify(studentService).getLastSixStudents();
     }
+
+    @Test
+    void testPrintStudentsSynchronizedSuccess() throws Exception {
+        given(studentService.getLastSixStudents()).willReturn(Arrays.asList(
+                new Student(1L, "Student1", 20),
+                new Student(2L, "Student2", 21),
+                new Student(3L, "Student3", 22),
+                new Student(4L, "Student4", 23),
+                new Student(5L, "Student5", 24),
+                new Student(6L, "Student6", 25)
+        ));
+
+        mockMvc.perform(get("/student/print-synchronized"))
+                .andExpect(status().isOk());
+
+        verify(studentService).getLastSixStudents();
+    }
+
+    @Test
+    void testPrintStudentsSynchronizedInsufficientStudents() throws Exception {
+        given(studentService.getLastSixStudents()).willReturn(Arrays.asList(
+                new Student(1L, "Student1", 20),
+                new Student(2L, "Student2", 21),
+                new Student(3L, "Student3", 22),
+                new Student(4L, "Student4", 23)
+        ));
+
+        mockMvc.perform(get("/student/print-synchronized"))
+                .andExpect(status().isBadRequest());
+
+        verify(studentService).getLastSixStudents();
+    }
 }
