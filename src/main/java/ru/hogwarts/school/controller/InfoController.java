@@ -17,4 +17,11 @@ public class InfoController {
     public ResponseEntity<String> getServerPort() {
         return ResponseEntity.ok("The application is running on port: " + serverPort);
     }
+    
+    @GetMapping("/sum")
+    public ResponseEntity<Integer> getSum() {
+        int n = 1_000_000;
+        int sum = n * (n + 1) / 2;  // Optimized computation using arithmetic series formula
+        return ResponseEntity.ok(sum);
+    }
 }
