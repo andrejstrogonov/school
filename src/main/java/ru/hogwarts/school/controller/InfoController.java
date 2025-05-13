@@ -5,9 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.hogwarts.school.util.SumTask;
 
-import java.util.concurrent.ForkJoinPool;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/info")
@@ -29,9 +28,10 @@ public class InfoController {
     }
     
     @GetMapping("/sum-parallel")
-    public ResponseEntity<Integer> getSumUsingForkJoin() {
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        int sum = forkJoinPool.invoke(new SumTask(1, 1_000_000));
+    public ResponseEntity<Integer> getSumUsingStream() {
+        int sum = IntStream.rangeClosed(1, 1_000_000)
+                           .parallel()
+                           .reduce(0, Integer::sum);
         return ResponseEntity.ok(sum);
     }
 }
