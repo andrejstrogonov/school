@@ -85,4 +85,14 @@ public class StudentService {
         logger.info("Called getLastFiveStudents method");
         return studentRepository.findLastFiveStudents();
     }
+
+    public List<String> getStudentNamesStartingWithA() {
+        logger.info("Called getStudentNamesStartingWithA method");
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name.startsWith("A"))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+    }
 }

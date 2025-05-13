@@ -72,4 +72,10 @@ public class StudentController {
         List<Student> students = studentService.getLastFiveStudents();
         return students.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(students);
     }
+
+    @GetMapping("/names-starting-with-a")
+    public ResponseEntity<List<String>> getStudentNamesStartingWithA() {
+        List<String> studentNames = studentService.getStudentNamesStartingWithA();
+        return ResponseEntity.ok(studentNames);
+    }
 }
