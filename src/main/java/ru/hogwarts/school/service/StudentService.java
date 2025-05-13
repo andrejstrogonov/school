@@ -85,4 +85,9 @@ public class StudentService {
         logger.info("Called getLastFiveStudents method");
         return studentRepository.findLastFiveStudents();
     }
+
+    public List<Student> getLastSixStudents() {
+        logger.info("Called getLastSixStudents method");
+        return studentRepository.findLastSixStudents();
+    }
 }

@@ -12,9 +12,11 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -101,5 +103,37 @@ class StudentControllerWebMVCTests {
         mockMvc.perform(get("/student/1/faculty"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Test Faculty"));
+    }
+
+    @Test
+    void testPrintStudentsParallelSuccess() throws Exception {
+        given(studentService.getLastSixStudents()).willReturn(Arrays.asList(
+                new Student(1L, "Student1", 20),
+                new Student(2L, "Student2", 21),
+                new Student(3L, "Student3", 22),
+                new Student(4L, "Student4", 23),
+                new Student(5L, "Student5", 24),
+                new Student(6L, "Student6", 25)
+        ));
+
+        mockMvc.perform(get("/student/print-parallel"))
+                .andExpect(status().isOk());
+        
+        verify(studentService).getLastSixStudents();
+    }
+
+    @Test
+    void testPrintStudentsParallelInsufficientStudents() throws Exception {
+        given(studentService.getLastSixStudents()).willReturn(Arrays.asList(
+                new Student(1L, "Student1", 20),
+                new Student(2L, "Student2", 21),
+                new Student(3L, "Student3", 22),
+                new Student(4L, "Student4", 23)
+        ));
+
+        mockMvc.perform(get("/student/print-parallel"))
+                .andExpect(status().isBadRequest());
+        
+        verify(studentService).getLastSixStudents();
     }
 }
