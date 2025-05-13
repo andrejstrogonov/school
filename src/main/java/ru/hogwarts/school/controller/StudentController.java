@@ -1,5 +1,8 @@
 package ru.hogwarts.school.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,5 +74,100 @@ public class StudentController {
     public ResponseEntity<List<Student>> getLastFiveStudents() {
         List<Student> students = studentService.getLastFiveStudents();
         return students.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(students);
+    }
+
+    @Operation(summary = "Print students' names in synchronized manner")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully printed student names in synchronized manner"),
+        @ApiResponse(responseCode = "400", description = "Not enough students to perform synchronized printing")
+    })
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<Void> printStudentsSynchronized() {
+        List<Student> students = studentService.getLastFiveStudents();
+        
+        if (students.size() < 6) {
+            return ResponseEntity.badRequest().build(); // Not enough students
+        }
+
+        // Create a lock object for synchronization
+        final Object lock = new Object();
+        
+        // Main thread prints first two names
+        synchronized (lock) {
+            System.out.println(students.get(0).getName());
+            System.out.println(students.get(1).getName());
+        }
+
+        // Thread for third and fourth student
+        Thread thread1 = new Thread(() -> {
+            synchronized (lock) {
+                System.out.println(students.get(2).getName());
+                System.out.println(students.get(3).getName());
+            }
+        });
+
+        // Thread for fifth and sixth student
+        Thread thread2 = new Thread(() -> {
+            synchronized (lock) {
+                System.out.println(students.get(4).getName());
+                System.out.println(students.get(5).getName());
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ResponseEntity.status(500).build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Print students' names in parallel")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully printed student names"),
+        @ApiResponse(responseCode = "400", description = "Not enough students to perform parallel printing")
+    })
+    @GetMapping("/print-parallel")
+    public ResponseEntity<Void> printStudentsParallel() {
+        List<Student> students = studentService.getLastFiveStudents();
+        
+        if (students.size() < 5) {
+            return ResponseEntity.badRequest().build(); // Not enough students
+        }
+
+        // Print first two names in the main thread
+        System.out.println(students.get(0).getName());
+        System.out.println(students.get(1).getName());
+
+        // Create first thread to print next two names
+        Thread thread1 = new Thread(() -> {
+            System.out.println(students.get(2).getName());
+            System.out.println(students.get(3).getName());
+        });
+
+        // Create second thread to print the last name
+        Thread thread2 = new Thread(() -> {
+            System.out.println(students.get(4).getName());
+        });
+
+        // Start both threads
+        thread1.start();
+        thread2.start();
+
+        // Wait for threads to complete
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok().build();
     }
 }

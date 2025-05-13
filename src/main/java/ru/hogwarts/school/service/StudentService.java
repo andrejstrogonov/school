@@ -85,4 +85,21 @@ public class StudentService {
         logger.info("Called getLastFiveStudents method");
         return studentRepository.findLastFiveStudents();
     }
+
+    public List<Student> getLastSixStudents() {
+        logger.info("Called getLastSixStudents method");
+        return studentRepository.findLastSixStudents();
+    }
+    
+    /**
+     * Prints student names in a thread-safe manner using synchronization
+     * @param students the list of students whose names to print
+     */
+    public synchronized void printStudentNames(List<Student> students) {
+        logger.info("Called printStudentNames method");
+        for (Student student : students) {
+            System.out.println(student.getName());
+            logger.debug("Printed student name: {}", student.getName());
+        }
+    }
 }
